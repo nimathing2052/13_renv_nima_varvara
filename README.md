@@ -2,18 +2,24 @@
 
 ## Summary
 
-Welcome to the materials for a session that is part of the I2DS (Introduction to Data Science) Tools for Data Science workshop hosted at the Hertie School, Berlin, in October 2023. This student-run workshop is an integral component of the course "Introduction to Data Science" taught by Simon Munzert during the Fall 2023 semester.
+Welcome to the materials for a session that is part of the I2DS (Introduction to Data Science) Tools for Data Science workshop hosted at the Hertie School, Berlin, in October 2023. This student-run workshop is an integral component of the course "Introduction to Data Science" taught by Professor Simon Munzert during the Fall 2023 semester.
 
 ## Session Contents
 
-This session is designed to introduce you to `renv`, a powerful package that enhances package version control and library management in R. The provided presentation offers an initial overview of the package and its primary functions. Additionally, the practice materials offer an opportunity to gain hands-on experience with these functions, deepening your understanding of their utility. You are welcome to incorporate your own content or explore the topics mentioned above during the session.
+This session is designed to introduce you to `renv`, a powerful package that enhances package version control and library management in R. 
+
+The provided presentation offers an initial overview of the package and its primary functions. Additionally, the practice materials offer an opportunity to gain hands-on experience with these functions, deepening your understanding of their utility. 
+
+You are welcome to incorporate your own content or explore the topics mentioned above during the session.
 
 ## Main Learning Objectives
 
 In this session, we aim to achieve two key learning objectives:
 
-1. Explain the significance of managing libraries in data science projects.
-2. Provide you with the essential tools and knowledge to effectively utilize `renv` in your future R projects. This will not only enhance reproducibility but also streamline collaboration with others on your projects.
+1. Explain the significance of managing libraries in data science projects using powerful tools such as renv.
+2. Provide you with the essential tools and knowledge to effectively utilize `renv` in your future R projects. 
+
+This will not only enhance reproducibility but also streamline collaboration with others on your projects.
 
 ## Statement of Contributions
 
@@ -21,10 +27,6 @@ Nima Thing and Varvara both played roles in the planning, delivery, and presenta
 
 Nima and Varvara collaborated on developing the tutorial section, actively participating in the planning and recording of the session to ensure that the materials delivered a comprehensive learning experience.
 
-## Instructors
-
-- Nima Thing
-- Varvara Iliyina
 
 ## Further Resources
 
