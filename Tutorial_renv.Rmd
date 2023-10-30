@@ -87,6 +87,11 @@ For the purpose of this tutorial, we would be utilizing titanic_test.R file, whi
 ### Sample Titanic Code: 
 
 ```{r}
+# Install packages if needed
+if(!require(dplyr, ggplot2)){
+    install.packages(c("dplyr", "ggplot2"))
+}
+
 # Load necessary libraries
 library(dplyr)
 library(ggplot2)
@@ -112,7 +117,10 @@ survivor_counts <- survivors %>%
 # Create a bar plot to visualize the survivor counts by class
 ggplot(data = survivor_counts, aes(x = Class, y = Count, fill = Class)) +
   geom_bar(stat = "identity") +
-  labs(title = "Number of Titanic Survivors by Class", x = "Class", y = "Count")
+  labs(title = "Number of Titanic Survivors by Class",
+       x = "Class",
+       y = "Count") +
+  theme_classic()
 
 
 ```
