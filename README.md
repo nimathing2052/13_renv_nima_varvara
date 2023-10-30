@@ -2,7 +2,9 @@
 
 ## Summary
 
-Welcome to the materials for a session that is part of the I2DS (Introduction to Data Science) Tools for Data Science workshop hosted at the Hertie School, Berlin, in October 2023. This student-run workshop is an integral component of the course "Introduction to Data Science" taught by Professor Simon Munzert during the Fall 2023 semester.
+Welcome to the materials for a session that is part of the I2DS (Introduction to Data Science) Tools for Data Science workshop hosted at the Hertie School, Berlin, in October 2023. 
+
+This student-run workshop is an integral component of the course "Introduction to Data Science" taught by Professor Simon Munzert during the Fall 2023 semester.
 
 ## Session Contents
 
