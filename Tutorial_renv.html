@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Ensuring Reproducibility in R with renv</title>
+
+<script src="Tutorial_renv_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="Tutorial_renv_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="Tutorial_renv_files/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="Tutorial_renv_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="Tutorial_renv_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="Tutorial_renv_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="Tutorial_renv_files/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="Tutorial_renv_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="Tutorial_renv_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="Tutorial_renv_files/navigation-1.1/tabsets.js"></script>
+<link href="Tutorial_renv_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="Tutorial_renv_files/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="custom.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Ensuring Reproducibility in R with
+<code>renv</code></h1>
+<h3 class="subtitle">I2DS Tools for Data Science Workshop</h3>
+
+</div>
+
+
+<p>Prepared by: Nima Thing &amp; Varvara Ilyina</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Reproducibility is a critical aspect of data analysis and project
+development in R. One of the common challenges in ensuring
+reproducibility is managing package dependencies and their versions.
+This is where <code>renv</code> comes into play.</p>
+<p>In this document, we will explore the motivation behind
+<code>renv</code>, what <code>renv</code> is, the concept of a library
+path, the challenges it addresses, and a step-by-step guide to get
+started with <code>renv</code> using the <em>Titanic</em> dataset.</p>
+<div id="motivation-behind-renv" class="section level3">
+<h3>Motivation Behind <code>renv</code></h3>
+<p>Have you ever finished a project, revisited it a year later, and
+wondered:</p>
+<ul>
+<li><p>Why is my <code>dplyr</code> data manipulation pipeline suddenly
+causing an error? I’m sure it was functioning correctly before.</p></li>
+<li><p>What caused my <code>ggplot2</code> graphs to invert the bars? I
+distinctly recall them working as expected in the past.</p></li>
+</ul>
+</div>
+<div id="what-is-renv" class="section level3">
+<h3>What is <code>renv</code>?</h3>
+<p><code>renv</code> is an R package that provides an isolated package
+library for R projects. It allows you to capture and manage the packages
+and their versions specific to a project, ensuring consistency across
+different environments.</p>
+<p><strong>Isolated:</strong></p>
+<p>Each project is assigned its own library of R packages, so you can
+upgrade and change package versions in one project without worrying
+about it impacting your other projects.</p>
+<p><strong>Portable:</strong></p>
+<p>A lockfile captures the state of your R packages, allowing you to
+more easily share and collaborate on projects with others, and ensures
+that everyone is working from a common base.</p>
+<p><strong>Reproducible:</strong></p>
+<p>Use <code>renv::snapshot()</code> to save the state of your R library
+to the lockfile <code>renv.lock</code>. You can later use
+<code>renv::restore()</code> to restore your R library exactly as
+specified in the lockfile.</p>
+</div>
+<div id="the-library-path" class="section level3">
+<h3>The Library Path</h3>
+<p>The library path refers to the directory where project-specific R
+packages are stored. It is separate from the global R library, ensuring
+that your project’s package versions do not interfere with other
+projects.</p>
+<p>An R session can be configured to access multiple library paths,
+which are essentially predefined directories that R searches when it
+needs to locate and load a package.</p>
+<p>The <code>.libPaths()</code> function can be used to both retrieve
+and modify the library paths for your specific R session.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">.libPaths</span>()</span></code></pre></div>
+<pre><code>## [1] &quot;/Users/NimaThing/Documents/GitHub/Workshop/renv_nima_varvara/renv/library/R-4.3/x86_64-apple-darwin20&quot;
+## [2] &quot;/Users/NimaThing/Library/Caches/org.R-project.R/R/renv/sandbox/R-4.3/x86_64-apple-darwin20/b06620f4&quot;</code></pre>
+<ol style="list-style-type: decimal">
+<li><p>User library: It is the folder where packages we choose to
+download and install normally get installed.</p></li>
+<li><p>System library: It is the folder, where R’s default packages are
+stored.</p></li>
+<li><p>Site library: It is the place where packages managed by
+administrators are stored</p></li>
+</ol>
+</div>
+<div id="the-challenge" class="section level3">
+<h3>The Challenge</h3>
+<p>Without an isolated package library, projects might use different
+package versions, leading to inconsistencies and reproducibility issues.
+This can make it challenging to share and reproduce your work.</p>
+</div>
+<div id="the-solution-renv" class="section level3">
+<h3>The Solution: <code>renv</code></h3>
+<p><code>renv</code> solves this challenge by providing a
+project-specific library path. It allows you to capture and manage the
+exact package versions used in your project, making it easy to reproduce
+the environment in different locations.</p>
+</div>
+</div>
+<div id="getting-started-with-renv" class="section level1">
+<h1>Getting Started with <code>renv</code></h1>
+<p>Let’s walk through the process of setting up a basic R project using
+<code>renv</code>.</p>
+<p>This tutorial focuses on the step-by-step process of setting up
+<code>renv</code> from scratch. However, it’s worth noting that you can
+also install and activate <code>renv</code> at any phase of your
+project.</p>
+<p>For the purpose of this tutorial, we would be utilizing
+titanic_test.R file, which creates a basic bar plot to visualize the
+Titanic survivor counts by class. However, we encourage you to
+experiment any other code that you have been working on.</p>
+<div id="sample-titanic-code" class="section level3">
+<h3>Sample Titanic Code:</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Load necessary libraries</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># Load the Titanic dataset from the &#39;titanic&#39; package</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;Titanic&quot;</span>, <span class="at">package =</span> <span class="st">&quot;datasets&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co"># Convert the dataset to a data frame for easier manipulation</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>titanic_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(Titanic)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co"># Display the first few rows of the data</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">head</span>(titanic_df)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Class"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Sex"],"name":[2],"type":["fct"],"align":["left"]},{"label":["Age"],"name":[3],"type":["fct"],"align":["left"]},{"label":["Survived"],"name":[4],"type":["fct"],"align":["left"]},{"label":["Freq"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"1st","2":"Male","3":"Child","4":"No","5":"0","_rn_":"1"},{"1":"2nd","2":"Male","3":"Child","4":"No","5":"0","_rn_":"2"},{"1":"3rd","2":"Male","3":"Child","4":"No","5":"35","_rn_":"3"},{"1":"Crew","2":"Male","3":"Child","4":"No","5":"0","_rn_":"4"},{"1":"1st","2":"Female","3":"Child","4":"No","5":"0","_rn_":"5"},{"1":"2nd","2":"Female","3":"Child","4":"No","5":"0","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Filter the data to show only passengers who survived</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>survivors <span class="ot">&lt;-</span> titanic_df <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">filter</span>(Survived <span class="sc">==</span> <span class="st">&quot;Yes&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co"># Calculate the count of survivors by passenger class</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>survivor_counts <span class="ot">&lt;-</span> survivors <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="fu">group_by</span>(Class) <span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Freq))</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co"># Create a bar plot to visualize the survivor counts by class</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> survivor_counts, <span class="fu">aes</span>(<span class="at">x =</span> Class, <span class="at">y =</span> Count, <span class="at">fill =</span> Class)) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Number of Titanic Survivors by Class&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Class&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="Tutorial_renv_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="install-renv" class="section level3">
+<h3>1. Install <code>renv</code></h3>
+<p>If you haven’t already installed <code>renv</code>, you can do so
+using the following command:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;renv&quot;</span>)</span></code></pre></div>
+</div>
+<div id="initialize-a-new-project-environment" class="section level3">
+<h3>2. Initialize a New Project Environment</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">library</span>(renv)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span></code></pre></div>
+</div>
+<div id="install-remove-packages" class="section level3">
+<h3>3. Install / Remove Packages</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co">#install packages</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">&quot;packagename&quot;</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#remove packages</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">remove</span>(<span class="st">&quot;packagename&quot;</span>)</span></code></pre></div>
+</div>
+<div id="initialize-a-new-project-environment-1" class="section level3">
+<h3>4. Initialize a New Project Environment</h3>
+<p>After configuring the project, we should save the configuration into
+a lockfile, in which all packages versions are recorded.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code></pre></div>
+<p>We can also check the status of the library with:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">status</span>()</span></code></pre></div>
+<pre><code>## The following package(s) are in an inconsistent state:
+## 
+##  package     installed recorded used
+##  base64enc   y         n        y   
+##  bslib       y         n        y   
+##  cachem      y         n        y   
+##  digest      y         n        y   
+##  ellipsis    y         n        y   
+##  evaluate    y         n        y   
+##  fastmap     y         n        y   
+##  fontawesome y         n        y   
+##  fs          y         n        y   
+##  highr       y         n        y   
+##  htmltools   y         n        y   
+##  jquerylib   y         n        y   
+##  jsonlite    y         n        y   
+##  knitr       y         n        y   
+##  memoise     y         n        y   
+##  mime        y         n        y   
+##  rappdirs    y         n        y   
+##  rmarkdown   y         n        y   
+##  sass        y         n        y   
+##  stringi     y         n        y   
+##  stringr     y         n        y   
+##  tinytex     y         n        y   
+##  xfun        y         n        y   
+##  yaml        y         n        y   
+## 
+## See ?renv::status() for advice on resolving these issues.</code></pre>
+<p>If after continuing to make changes to the packages once the lockfile
+has been created, we would like revert to the previous state (as
+recorded in the lockfile), we can use:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code></pre></div>
+</div>
+<div id="push-the-code-to-github-repository" class="section level3">
+<h3>5. Push the Code to Github Repository</h3>
+<p>Initialize the R project folder as a Git project, and push it to a
+remote with the following set of commands.</p>
+<p><em>To streamline the GitHub setup process, we recommend initiating
+your project in R or cloning an empty GitHub repository from the start.
+This approach minimizes authentication concerns. It’s important to note
+that as of August 13, 2021, support for password authentication was
+discontinued by GitHub. This means that you’ll need to rely on the
+Personal Access Token method for authentication. If you are using GitHub
+Desktop in conjunction with R’s git setup, authentication is usually
+handled seamlessly.</em></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Initialize a Git repository</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>git init</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co"># Add all files to the staging area</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>git add .</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co"># Commit the changes with a message</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>git commit <span class="sc">-</span>m <span class="st">&quot;Initial commit&quot;</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co"># Add a remote repository (change the URL to your actual GitHub repository)</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>git remote add origin https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span><span class="er">&lt;</span>your_username<span class="sc">&gt;</span><span class="er">/&lt;</span>your_project<span class="sc">&gt;</span>.git</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co"># Push the changes to the &#39;main&#39; branch on the remote repository</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>git push <span class="sc">-</span>u origin main</span></code></pre></div>
+<p>Assuming you did everything correctly, you’ll see the R project
+pushed to the Main branch:</p>
+</div>
+<div id="restore-your-r-environment-with-a-single-command"
+class="section level3">
+<h3>6. Restore your R Environment with a Single Command</h3>
+<p>Let’s start by cloning the repository into a new folder –
+<code>newproject</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span><span class="er">&lt;</span>you<span class="sc">&gt;</span><span class="er">/&lt;</span>project<span class="sc">&gt;</span>.git newproject</span></code></pre></div>
+<p>When you open this project in RStudio, you’ll notice that
+<code>renv</code> is already initialized and installed. It will prompt
+you to check the status and ensure that everything is in order. To
+proceed, simply run the following command:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code></pre></div>
+<p>Once you’ve executed this command, you’ll be all set to continue with
+your project.</p>
+</div>
+</div>
+<div id="summing-up" class="section level1">
+<h1>Summing Up</h1>
+<p>In conclusion, you’ve now experienced how straightforward it is to
+manage project package dependencies within R environments. You’ve
+explored the functionality of three fundamental <code>renv</code>
+functions: <code>activate()</code>, <code>snapshot()</code>, and
+<code>restore()</code>.</p>
+<p>Through a hands-on example, you’ve gained an understanding of how
+each of these functions operates, and hopefully, you now have a deeper
+appreciation for the convenience that <code>renv</code> brings to your
+projects.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
